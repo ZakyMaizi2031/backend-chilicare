@@ -141,12 +141,12 @@ app.include_router(admin.router)          # CRUD Dashboard Admin
 app.include_router(artikel.router)        # Artikel Encyclopedia Mandiri
 app.include_router(history.router)        # Riwayat Deteksi
 
-# 7. ENDPOINT ROOT (Untuk Cek Status Server)
-@app.get("/", tags=["Root"])
+# 7. ENDPOINT ROOT (Untuk Cek Status Server & Health Check)
+@app.api_route("/", methods=["GET", "HEAD"], tags=["Root"])
 def check_status():
     return {
         "project": "ChiliCare API",
         "status": "Online",
         "database": "Connected",
         "docs": "/docs"
-    }
+    }
