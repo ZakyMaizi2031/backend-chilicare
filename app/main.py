@@ -149,4 +149,28 @@ def check_status():
         "status": "Online",
         "database": "Connected",
         "docs": "/docs"
-    }
+    }
+
+# Health Check yang sesungguhnya terkoneksi ke database untuk Auto-Ping
+@app.get("/health", tags=["Root"])
+def health_check():
+    db = SessionLocal()
+    try:
+        # Menjalankan query ringan untuk memicu aktivitas koneksi ke database Aiven
+        from sqlalchemy import text
+        db.execute(text("SELECT 1"))
+        return {
+            "status": "healthy",
+            "database": "connected"
+        }
+    except Exception as e:
+        import logging
+        logging.error(f"Health check failed: {e}")
+        return {
+            "status": "unhealthy",
+            "database": "disconnected",
+            "error": str(e)
+        }
+    finally:
+        db.close()
+
