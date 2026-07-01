@@ -152,7 +152,7 @@ def check_status():
     }
 
 # Health Check yang sesungguhnya terkoneksi ke database untuk Auto-Ping
-@app.get("/health", tags=["Root"])
+@app.api_route("/health", methods=["GET", "HEAD"], tags=["Root"])
 def health_check():
     db = SessionLocal()
     try:
