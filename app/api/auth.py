@@ -29,7 +29,10 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 def login(data: schemas.UserLogin, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.email == data.email).first()
     
-    if not user or not security.verify_password(data.password, user.password):
+    if not user:
+        raise HTTPException(status_code=404, detail="Pengguna tidak ditemukan")
+        
+    if not security.verify_password(data.password, user.password):
         raise HTTPException(status_code=401, detail="Email atau password salah")
     
     # Generate JWT Token
