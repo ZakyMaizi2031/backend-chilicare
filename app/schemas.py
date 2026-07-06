@@ -1,4 +1,5 @@
-from pydantic import BaseModel, ConfigDict
+import re
+from pydantic import BaseModel, ConfigDict, field_validator
 from typing import Optional, List
 from datetime import datetime
 
@@ -17,6 +18,15 @@ class UserCreate(BaseModel):
     email: str
     password: str
     role: Optional[str] = "petani"
+
+    @field_validator('email')
+    @classmethod
+    def validate_email(cls, v: str) -> str:
+        # Regex sederhana untuk memeriksa format email standar
+        email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+        if not re.match(email_regex, v.strip()):
+            raise ValueError("Format email tidak valid (harus mengandung '@' dan domain, contoh: user@gmail.com)")
+        return v.strip()
 
 class UserUpdate(BaseModel):
     """Digunakan Admin untuk mengedit data pengguna di Web Dashboard"""
