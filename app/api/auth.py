@@ -16,12 +16,15 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id: str = payload.get("sub")
         if user_id is None:
+            print(">>> [AUTH ERROR] Payload 'sub' is missing from token.")
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token tidak valid")
-    except jwt.PyJWTError:
+    except jwt.PyJWTError as e:
+        print(f">>> [AUTH ERROR] JWT decode failed for token '{token[:15]}...': {e}")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token kadaluarsa atau tidak valid")
     
     user = db.query(models.User).filter(models.User.id_user == int(user_id)).first()
     if user is None:
+        print(f">>> [AUTH ERROR] User with ID {user_id} was not found in DB.")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User tidak ditemukan")
     return user
 

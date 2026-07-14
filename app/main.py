@@ -133,6 +133,9 @@ if not os.path.exists(settings.UPLOAD_DIR):
 # Folder static bisa diakses via URL: http://localhost:8000/static/...
 app.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
 
+# Mount /uploads sebagai fallback jika ada client yang memanggil URL tanpa prefix /static
+app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
+
 # 5. REGISTRASI ROUTER (Menghubungkan endpoint API)
 app.include_router(auth.router)           # Login & Register
 app.include_router(encyclopedia.router)   # Katalog Penyakit untuk Petani
