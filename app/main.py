@@ -145,7 +145,7 @@ app.include_router(artikel.router)        # Artikel Encyclopedia Mandiri
 app.include_router(history.router)        # Riwayat Deteksi
 
 # 7. ENDPOINT ROOT (Untuk Cek Status Server & Health Check)
-@app.api_route("/", methods=["GET", "HEAD"], tags=["Root"])
+@app.get("/", tags=["Root"])
 def check_status():
     return {
         "project": "ChiliCare API",
@@ -154,8 +154,12 @@ def check_status():
         "docs": "/docs"
     }
 
+@app.head("/", tags=["Root"], include_in_schema=False)
+def check_status_head():
+    return
+
 # Health Check yang sesungguhnya terkoneksi ke database untuk Auto-Ping
-@app.api_route("/health", methods=["GET", "HEAD"], tags=["Root"])
+@app.get("/health", tags=["Root"])
 def health_check():
     db = SessionLocal()
     try:
@@ -176,4 +180,8 @@ def health_check():
         }
     finally:
         db.close()
+
+@app.head("/health", tags=["Root"], include_in_schema=False)
+def health_check_head():
+    return
 
