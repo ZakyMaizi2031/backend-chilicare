@@ -88,8 +88,8 @@ def run_inference(image_path):
         
         label_hasil = labels[result_index]
         
-        # 8. THRESHOLD CONFIDENCE (Jika akurasi di bawah 60%, anggap bukan cabai)
-        if akurasi < 0.60:
+        # 8. THRESHOLD CONFIDENCE (Jika akurasi di bawah 50%, anggap bukan cabai)
+        if akurasi < 0.50:
             return "BukanCabai", akurasi
             
         return label_hasil, akurasi
